@@ -1,24 +1,25 @@
-import logo from './logo.svg';
 import './App.css';
+import Movies from "./components/movies"
+import { useState } from 'react';
+import { getMovies } from "./services/fakeMovieService"
+import React from 'react';
+import GenreListGroup from "./components/genreListGroup"
 
 function App() {
+  const [movieArray] = useState(getMovies());
+  const [currentGenre, setcurrentGenre] = useState("All Genres");
+  const handleFilterGenres = (genre) => {
+    setcurrentGenre(genre);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    // <div className='componentContainer'>
+    //   <GenreListGroup onFilterGenres={handleFilterGenres} currentGenre={currentGenre} />
+    <main className='container'>
+      <Movies currentGenre={currentGenre} />
+    </main>
+    // </div>
+
   );
 }
 

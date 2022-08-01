@@ -32,7 +32,17 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.componentContainer {
+  display: flex;
+  align-items: flex-start;
 }
