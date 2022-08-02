@@ -8,7 +8,7 @@ import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 
 
-const Movies = ({ currentGenre }) => {
+const Movies = () => {
 
     const [movies, setMovie] = useState(getMovies());//we will get the data in the useEffect function
     const [pageSize, setPageSize] = useState(4);

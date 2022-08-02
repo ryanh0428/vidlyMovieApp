@@ -1,7 +1,10 @@
 import _ from 'lodash';
+import Movies from './movies';
+import { Link } from "react-router-dom"
 function TableBody({ data, columns }) {
     const renderCell = (item, column) => {
         if (column.content) return column.content(item);
+
         return _.get(item, column.path)
     }
 
