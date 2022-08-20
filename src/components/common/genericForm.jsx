@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Joi from 'joi';
 import Input from "./input"
-function GenericForm({ data, schema, onSubmit, labels, onChangeData, buttonLabel, inputTypes }) {
+import Select from "./select"
+
+function GenericForm({ data, schema, onSave, labels, onChangeData, buttonLabel, inputTypes, genres, keys, history }) {
     const [error, setError] = useState({});
     const validate = () => {
         const options = { abortEarly: false };
         const { error } = schema.validate(data, options);
-        console.log("I'm error", error)
         if (!error) return null;
         const JoiError = {};
         error.details.map(err => {
@@ -15,16 +16,19 @@ function GenericForm({ data, schema, onSubmit, labels, onChangeData, buttonLabel
         return JoiError;
     }
 
+
+
     const handleSubmit = e => {
         e.preventDefault();
-        console.log("hello handle submit")
+        console.log("hello handle submit", e)
         const errors = validate();
         setError({ ...errors || {} });
         console.log(errors);
         if (errors) return console.log("I am always true");
 
         //Call the server
-        onSubmit();
+        onSave(data);
+
         // console.log(username)
         // console.log(username.current.value)// a way to access the dom value
     }
@@ -48,15 +52,16 @@ function GenericForm({ data, schema, onSubmit, labels, onChangeData, buttonLabel
         setError(currentError);
     }
 
-    const names = Object.keys(data);
-    console.log(names)
+
     const types = ["text", "password"];
 
     return (
         <form onSubmit={handleSubmit}>
             {
-                names.map((name, index) =>
-                    (<Input key={name} name={name} label={labels.at(index)} value={data[name]} onChange={handleChange} error={error[name]} type={inputTypes.at(index)} />)
+                keys.map((objKey, index) => {
+                    if (inputTypes.at(index) === 'selection') return (<Select key={objKey} name={objKey} value={data[objKey]} label={labels.at(index)} options={genres} onChange={handleChange} error={error[objKey]} />)
+                    return (<Input key={objKey} name={objKey} label={labels.at(index)} value={data[objKey]} onChange={handleChange} error={error[objKey]} type={inputTypes.at(index)} />);
+                }
                 )
             }
 

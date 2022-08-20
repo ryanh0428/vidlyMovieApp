@@ -1,20 +1,33 @@
 import { createFactory, useState } from "react";
 import Joi from 'joi';
 import GenericForm from "./common/genericForm"
+import * as userService from "../services/userService";
 
-function RegisterForm() {
+function RegisterForm({ history }) {
     const [data, setdata] = useState({ username: "", password: "", name: "" })
+    const [error, setError] = useState(null);
     const schema = Joi.object({
-        username: Joi.string().email({ tlds: { allow: false } }).required(),
-        password: Joi.string().min(5).required(),
-        name: Joi.string().required()
+        username: Joi.string().email({ tlds: { allow: false } }).required().label('Username'),
+        password: Joi.string().min(5).required().label('Password'),
+        name: Joi.string().required().label('Name')
     })
     const labels = ["Username", "Password", "Name"];
+    const keys = ['username', 'password', 'name'];
     const buttonLabel = "Register";
     const inputTypes = ["text", "password", "text"];
 
-    const doSubmit = () => {
-        console.log('Submitted')
+
+
+    const doSubmit = async (data) => {
+        try {
+            await userService.register(data);
+
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                setError(ex.response.data);
+
+            }
+        }
     }
 
     const handleChangeData = (data) => {
@@ -27,11 +40,15 @@ function RegisterForm() {
             <GenericForm
                 data={data}
                 schema={schema}
-                onSubmit={doSubmit}
+                onSave={doSubmit}
                 labels={labels}
                 onChangeData={handleChangeData}
                 buttonLabel={buttonLabel}
-                inputTypes={inputTypes} />
+                inputTypes={inputTypes}
+                keys={keys}
+                history={history}
+                usernameError={error} />
+            <h1>{error}</h1>
 
         </div>
     );

@@ -1,6 +1,5 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import Joi from 'joi';
-import Input from "./common/input"
 import GenericForm from "./common/genericForm"
 
 function LoginForm() {
@@ -15,6 +14,7 @@ function LoginForm() {
     const labels = ['Username', 'Password']
     const buttonLabel = "Login"
     const inputTypes = ["text", "password"];
+
 
     // const validate = () => {
     //     const options = { abortEarly: false };
