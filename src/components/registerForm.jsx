@@ -2,6 +2,7 @@ import { createFactory, useState } from "react";
 import Joi from 'joi';
 import GenericForm from "./common/genericForm"
 import * as userService from "../services/userService";
+import auth from "../services/authService";
 
 function RegisterForm({ history }) {
     const [data, setdata] = useState({ username: "", password: "", name: "" })
@@ -20,8 +21,9 @@ function RegisterForm({ history }) {
 
     const doSubmit = async (data) => {
         try {
-            await userService.register(data);
-
+            const response = await userService.register(data);
+            auth.loginWithJwt(response.headers['x-auth-token']);
+            window.location = '/';
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 setError(ex.response.data);

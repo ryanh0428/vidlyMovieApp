@@ -9,7 +9,7 @@ import { getGenres } from "../services/genreService";
 import httpService from "../services/httpService"
 
 
-const Movies = ({ movies, onlikeAMovie, onDelete }) => {
+const Movies = ({ movies, onlikeAMovie, onDelete, user }) => {
 
 
     const [pageSize, setPageSize] = useState(4);
@@ -84,9 +84,9 @@ const Movies = ({ movies, onlikeAMovie, onDelete }) => {
                 <ListGroup items={genres} onItemSelect={handleGenreSelect} selectedItem={selectedGenre} />
             </div>
             <div className="col">
-                <Link to="/movies/new">
+                {user && <Link to="/movies/new">
                     <button className="btn btn-primary m-2" >New Movie</button>
-                </Link>
+                </Link>}
 
                 <p>Showing {totalCount} movies in the database.</p>
                 <div>

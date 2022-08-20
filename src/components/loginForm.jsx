@@ -1,17 +1,19 @@
 import { useRef, useState } from "react";
 import Joi from 'joi';
-import GenericForm from "./common/genericForm"
+import GenericForm from "./common/genericForm";
+import auth from "../services/authService";
 
-function LoginForm() {
+function LoginForm({ history }) {
     const [data, setdata] = useState({ username: '', password: '' });
-
+    const [error, setError] = useState("");
 
     const schema = Joi.object({
         username: Joi.string().required().label('Username'),
         password: Joi.string().required().label('Password')
     })
 
-    const labels = ['Username', 'Password']
+    const labels = ['Username', 'Password'];
+    const keys = ['username', 'password'];
     const buttonLabel = "Login"
     const inputTypes = ["text", "password"];
 
@@ -55,8 +57,18 @@ function LoginForm() {
     //     // console.log(username.current.value)// a way to access the dom value
     // }
 
-    const doSubmit = () => {
-        console.log('Submitted')
+    const doSubmit = async ({ username, password }) => {
+        try {
+            await auth.login(username, password);
+
+            window.location = '/';
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                setError(ex.response.data);
+
+
+            }
+        }
     }
 
     const handleChangeData = (data) => {
@@ -89,11 +101,12 @@ function LoginForm() {
             <GenericForm
                 data={data}
                 schema={schema}
-                onSubmit={doSubmit}
+                onSave={doSubmit}
                 labels={labels}
                 onChangeData={handleChangeData}
-                buttonLabels={buttonLabel}
-                inputTypes={inputTypes} />
+                buttonLabel={buttonLabel}
+                inputTypes={inputTypes}
+                keys={keys} />
             {/* <form onSubmit={handleSubmit}>
                 <Input name="username" label="Username" value={data.username} onChange={handleChange} error={error.username} />
                 <Input name="password" label="Password" value={data.password} onChange={handleChange} error={error.password} /> */}
@@ -111,6 +124,7 @@ function LoginForm() {
                 </div>*/}
             {/* <button disabled={validate()} className="btn btn-primary">Login</button>
             </form> */}
+            <h1>{error}</h1>
         </div>
     );
 }

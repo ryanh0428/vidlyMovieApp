@@ -16,11 +16,17 @@ import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import httpService from "./services/httpService";
+import Logout from "./components/logout";
+import auth from "./services/authService";
+import ProtectedRoute from "./components/common/protectedRoute"
 
 function App() {
   const [movies, setMovie] = useState([]);//we will get the data in the useEffect function
+  const [user, setUser] = useState();
 
   useEffect(() => {
+    const tokenUser = auth.getCurrentUser();
+    setUser(tokenUser);
     getMoviesFromServer();
   }, [])
 
@@ -75,16 +81,23 @@ function App() {
     //   <GenreListGroup onFilterGenres={handleFilterGenres} currentGenre={currentGenre} />
     <>
       <ToastContainer />
-      <NavBar />
+      <NavBar user={user} />
       <main className='container'>
 
         <Switch>
           <Route path="/register" component={RegisterForm} />
           <Route path="/login" render={(props) => <LoginForm trytry="I am the props" {...props} />} />
-          <Route path="/movies/new" render={(props) => <MovieForm getAllMoviesFromServer={getMoviesFromServer} {...props} />} />
+          <Route path="/logout" component={Logout} />
+          <ProtectedRoute
+            path="/movies/new"
+            render={(props) => {
+              return <MovieForm getAllMoviesFromServer={getMoviesFromServer} {...props} />
+            }
+            }
+          />
           <Route path="/movies/:id" render={(props) => <MovieForm getAllMoviesFromServer={getMoviesFromServer} {...props} />} />
           <Route path="/movies" render={(props) =>
-            <Movies movies={movies} onlikeAMovie={likeAMovie} onDelete={handleDelete} />} />
+            <Movies movies={movies} onlikeAMovie={likeAMovie} onDelete={handleDelete} {...props} user={user} />} />
           <Route path="/customers" component={Customers} />
           <Route path="/rentals" component={Rentals} />
           <Route path="/not-found" component={NotFound} />
