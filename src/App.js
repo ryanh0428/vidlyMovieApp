@@ -91,11 +91,14 @@ function App() {
           <ProtectedRoute
             path="/movies/new"
             render={(props) => {
-              return <MovieForm getAllMoviesFromServer={getMoviesFromServer} {...props} />
+              <MovieForm getAllMoviesFromServer={getMoviesFromServer} {...props} />
             }
             }
           />
-          <Route path="/movies/:id" render={(props) => <MovieForm getAllMoviesFromServer={getMoviesFromServer} {...props} />} />
+          <ProtectedRoute
+            path="/movies/:id"
+            render={(props) => <MovieForm getAllMoviesFromServer={getMoviesFromServer} {...props} />}
+          />
           <Route path="/movies" render={(props) =>
             <Movies movies={movies} onlikeAMovie={likeAMovie} onDelete={handleDelete} {...props} user={user} />} />
           <Route path="/customers" component={Customers} />

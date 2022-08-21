@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import Joi from 'joi';
 import GenericForm from "./common/genericForm";
 import auth from "../services/authService";
+import { Redirect } from 'react-router-dom'
 
-function LoginForm({ history }) {
+function LoginForm({ history, location }) {
     const [data, setdata] = useState({ username: '', password: '' });
     const [error, setError] = useState("");
 
@@ -56,12 +57,13 @@ function LoginForm({ history }) {
     //     // console.log(username)
     //     // console.log(username.current.value)// a way to access the dom value
     // }
-
+    console.log(location, "location");
     const doSubmit = async ({ username, password }) => {
         try {
             await auth.login(username, password);
+            const { state } = location;//get this location from the ProtectedRoute
 
-            window.location = '/';
+            window.location = state ? state.from.pathname : '/';
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 setError(ex.response.data);
@@ -94,6 +96,7 @@ function LoginForm({ history }) {
     //     setdata(newdata);
     //     setError(currentError);
     // }
+    if (auth.getCurrentUser()) return <Redirect to="/" />
 
     return (
         <div>

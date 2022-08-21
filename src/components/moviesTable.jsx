@@ -2,6 +2,7 @@
 import Table from "./common/table"
 import Like from "./common/like"
 import { Link } from "react-router-dom"
+import auth from "../services/authService"
 function MoviesTable({ moviesByPage, onDelete, onlikeAMovie, onSort, sortColumn }) {
     const columns = [
         { path: 'title', label: 'Title', content: movie => <Link to={`movies/${movie._id}`}>{movie.title}</Link> },
@@ -11,6 +12,8 @@ function MoviesTable({ moviesByPage, onDelete, onlikeAMovie, onSort, sortColumn 
         { key: 'like', content: movie => (<Like onlikeAMovie={onlikeAMovie} theMovie={movie} />) },
         { key: 'delete', content: movie => (<button onClick={() => onDelete(movie._id)} className="btn btn-danger btn-sm">Delete</button>) }
     ]
+    const user = auth.getCurrentUser();
+    if (!user || !user.isAdmin) columns.splice(5, 1);
     return (
         <Table columns={columns} onSort={onSort} sortColumn={sortColumn} data={moviesByPage} />);
     {/* <tbody>
